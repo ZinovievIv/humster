@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Practicum {
@@ -12,6 +11,7 @@ public class Practicum {
 
 class HamsterFactory {
     Scanner scanner = new Scanner(System.in);
+
     ArrayList<Hamster> humsterHome = new ArrayList<>(); // нужна структура данных, в которой можно хранить хомяков
     // мы не знаем, сколько будет хомяков: 10 или 10_000, поэтому нужна сущность, которая может изменять свой размер
 
@@ -32,7 +32,7 @@ class HamsterFactory {
 
             String command = scanner.nextLine();
 
-            if (command.equils("Завершить")) {
+            if (command.equals("Завершить")) {
                 System.out.println("Программа завершена! Спасибо, что пользуетесь нашей сетью хомячих фабрик");
                 break;
             } else {
@@ -43,25 +43,58 @@ class HamsterFactory {
         }
     }
 
+
+    private void executeCommand(String command) {
+        try {
+            if (command.contains("Печать")) {
+                executePrint();
+            } else if (command.contains("Создать")) {
+                String name = command.split(" ")[1];
+                executeCreate(name);
+            } else if (command.contains("Удалить")) {
+                String param = command.split(" ")[1];
+                try {
+                    int index = Integer.parseInt(param);
+                    executeRemoveByIndex(index);
+                } catch (NumberFormatException exception) {
+                    showErrorMessage();
+                }
+            } else if (command.contains("Очистить")) {
+                executeClear();
+            } else if (command.contains("Заменить")) {
+                String[] params = command.split(" ");
+                int index = Integer.parseInt(params[1]);
+                String name = params[2];
+                executeSet(index, name);
+            } else if (command.contains("Размер")) {
+                executeSize();
+            } else {
+                showErrorMessage();
+            }
+        } catch (Exception exception) {
+            showErrorMessage();
+        }
+    }
+
     private void executePrint() {
         System.out.println("Вывожу актуальный список хомяков в хранилище:"); // выведите сообщение: "Вывожу актуальный список хомяков в хранилище:"
         for (int i = 0; i < humsterHome.size(); i++) {
-            Humster name = hamsterHome.get(i);
+            Hamster name = humsterHome.get(i);
             System.out.println("Хомяк " + "'" + name + "'" + ".");
         } // нужно напечатать всех хомяков, которые есть в хранилище в формате "Хомяк '[Имя хомяка]'"
     }
 
     private void executeCreate(String name) {
-        Humster name = new Humster(name);// создайте хомяка с именем [name] и добавьте его в ваше хранилище
-        humsterHome.add(name);
+        Hamster newName = new Hamster(name);// создайте хомяка с именем [name] и добавьте его в ваше хранилище
+        humsterHome.add(newName);
         System.out.println("Хомяк " + "'" + name + "'" + " создан и добавлен в хранилище");// выведите сообщение: "Хомяк '[name]' создан и добавлен в хранилище"
     }
 
     private void executeRemoveByIndex(int index) {
-        for (int i = 0; i < hamsterHome.size(); i++) {
+        for (int i = 0; i < humsterHome.size(); i++) {
             if (i == index) {
-                System.out.println("Хомяк " + "'" + humsteHome.get(index) + "'" + " удален успешно");
-                hamsterHome.remove(index);
+                System.out.println("Хомяк " + "'" + humsterHome.get(index) + "'" + " удален успешно");
+                humsterHome.remove(index);
             } else {
                 System.out.println("Хомяк по заданному индексу не существует");
             }
@@ -75,9 +108,9 @@ class HamsterFactory {
     }
 
     private void executeSet(int index, String name) {
-        Humster newHumster = new Humster(name); // создайте хомяка с именем [name] и замените им хомяка на позиции [index]
+        Hamster newHumster = new Hamster(name); // создайте хомяка с именем [name] и замените им хомяка на позиции [index]
         System.out.println("Хомяк " + "'" + humsterHome.get(index) + "'" + " был успешно заменён на хомяка " + "'" + name + "'");
-        humserHome.set(index, name);// выведите сообщение "Хомяк '[Имя удаленного хомяка]' был успешно заменён на хомяка '[Имя нового хомяка]'"
+        humsterHome.set(index, newHumster);// выведите сообщение "Хомяк '[Имя удаленного хомяка]' был успешно заменён на хомяка '[Имя нового хомяка]'"
 
     }
 
@@ -88,11 +121,12 @@ class HamsterFactory {
             System.out.println("В хранилище нет хомяков");// если в хранилище есть хомяки, надо вывести сообщение: "Количество хомяков в хранилище равно [текущее количество хомяков в хранилище]"
             // иначе вывести: "В хранилище нет хомяков"
         }
-
-        private void showErrorMessage() {
-            System.out.println("Неверная команда, попробуйте ещё раз.");// выведите сообщение: "Неверная команда, попробуйте ещё раз."
-        }
     }
+
+    private void showErrorMessage() {
+        System.out.println("Неверная команда, попробуйте ещё раз.");// выведите сообщение: "Неверная команда, попробуйте ещё раз."
+    }
+}
 
     class Hamster {
 
@@ -102,3 +136,4 @@ class HamsterFactory {
             this.name = name;
         }
     }
+
